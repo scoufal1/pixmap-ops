@@ -46,7 +46,7 @@ int main(int argc, char** argv)
    // flip horizontal
    ppm_image flip = image.flip_horizontal(); 
    flip.save("earth-flip.ppm"); 
-/*
+   
    // sub image
    ppm_image sub = image.subimage(200, 200, 100, 100); 
    sub.save("earth-subimage.ppm"); 
@@ -62,13 +62,12 @@ int main(int argc, char** argv)
    ppm_image soup;
    soup.load("../images/soup-ascii.ppm");
 
-   int y = (int) (0.5f * (image.width() - soup.width()));
-   int x = (int) (0.5f * (image.height() - soup.height()));
+   int x = (int) (0.5f * (image.width() - soup.width()));
+   int y = (int) (0.5f * (image.height() - soup.height()));
    ppm_image background = image.subimage(x, y, soup.width(), soup.height());
    background.save("background-test.ppm");
    ppm_image blend = background.alpha_blend(soup, 0.5f);
    image.replace(blend, x, y);
-   image.save("earth-blend-0.5.ppm");
-   */
+   image.save("earth-blend-0.5.ppm");   
 }
 

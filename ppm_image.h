@@ -70,7 +70,7 @@ namespace agl
      // return the height of the image
      int height() const;
    private:
-      ppm_pixel* image;
+      ppm_pixel* image_arr = NULL;
       int wid;
       int hgt;
   };
