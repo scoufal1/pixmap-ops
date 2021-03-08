@@ -46,7 +46,7 @@ int main(int argc, char** argv)
    // flip horizontal
    ppm_image flip = image.flip_horizontal(); 
    flip.save("earth-flip.ppm"); 
-   
+
    // sub image
    ppm_image sub = image.subimage(200, 200, 100, 100); 
    sub.save("earth-subimage.ppm"); 
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
    gamma.save("earth-gamma-0.6.ppm"); 
 
    gamma = image.gammaCorrect(2.2f);
-   gamma.save("earth-gamma-2.2.ppm"); 
+   gamma.save("earth-gamma-2.2.ppm");
 
    // alpha blend
    ppm_image soup;

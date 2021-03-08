@@ -58,6 +58,17 @@ namespace agl
      // Return a copy of this image converted to grayscale
      ppm_image grayscale() const;
 
+   ppm_image invert() const;
+   ppm_image sobel() const;
+   ppm_image box_blur() const;
+   ppm_image swirl_colors() const;
+   ppm_image swirl_colors2() const;
+   ppm_image rainbow() const;
+   ppm_image black_border(int thickness) const;
+   //assumes images are the same dimensions
+   ppm_image combine(const ppm_image& other) const;
+      int limit_value(int value) const;
+
      // Get the pixel at index (row, col)
      ppm_pixel get(int row, int col) const;
 
