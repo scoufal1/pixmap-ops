@@ -428,7 +428,7 @@ ppm_image ppm_image::rainbow() const
       }
    }
    //use alpha blend to overlay rainbow image on original image
-   result = this->alpha_blend(result, 0.5f);
+   result = this->alpha_blend(result, 0.3f);
    return result;
 }
 
