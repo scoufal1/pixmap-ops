@@ -131,6 +131,7 @@ ppm_image ppm_image::flip_horizontal() const
    int col;
    for(int i = 0; i < wid*hgt; i++) {
       row1 = floor(i/wid);
+      //new row is height of image - old row
       row2 = hgt-row1;
       col = i%wid;
       pixel = image_arr[i];
@@ -146,6 +147,7 @@ ppm_image ppm_image::subimage(int startx, int starty, int w, int h) const
     result.image_arr = new ppm_pixel[w*h];
     ppm_pixel pixel;
     int i = 0;
+    //iterates through limited portion of original image
     for(int row = starty; row < starty + h; row++) {
        for(int col = startx; col < startx + w; col++) {
           pixel = this->get(row,col);
@@ -163,7 +165,15 @@ void ppm_image::replace(const ppm_image& image, int startx, int starty)
    int i = 0;
    ppm_pixel pixel;
    for(int row = starty; row < starty + h; row++) {
+      //if row is out of range of original image dimensions, continue
+      if(row >= wid) {
+         continue;
+      }
        for(int col = startx; col < startx + w; col++) {
+          if(col >= hgt) {
+             i++;
+             continue;
+          }
           pixel = image.image_arr[i];
           this->set(row,col,pixel);
           i++;
@@ -255,6 +265,7 @@ ppm_image ppm_image::sobel() const
 		right = col+1;
 		up = row-1;
 		down = row+1;
+      //limit index values if they are outside range of image
 		if(left < 0) {
 		    left = 0;
 		}
@@ -267,6 +278,7 @@ ppm_image ppm_image::sobel() const
 		if(down >= this->height()) {
 		    down = this->height()-1;
 		}
+      //do calculation using two kernels and given formula
       r1 = (int)this->get(up, left).r - (int)this->get(up, right).r + 2*(int)this->get(row, left).r 
          - 2*(int)this->get(row, right).r + (int)this->get(down, left).r - (int)this->get(down, right).r;
       g1 = (int)this->get(up, left).g - (int)this->get(up, right).g + 2*(int)this->get(row, left).g 
@@ -279,15 +291,18 @@ ppm_image ppm_image::sobel() const
          - (int)this->get(down, left).g - 2*(int)this->get(down, col).g - (int)this->get(down, right).g;
       b2 = (int)this->get(up, left).b + 2*(int)this->get(up, col).b + (int)this->get(up, right).b 
          - (int)this->get(down, left).b - 2*(int)this->get(down, col).b - (int)this->get(down, right).b;
+
       r = pow(r1,2) + pow(r2, 2);
       r = int(pow(r, 0.5));
       g = pow(g1,2) + pow(g2, 2);
       g = int(pow(g, 0.5));
       b = pow(b1,2) + pow(b2, 2);
       b = int(pow(b, 0.5));
+
       r = limit_value(r);
       g = limit_value(g);
       b = limit_value(b);
+
       result.set(row,col,ppm_pixel{(unsigned char)r,(unsigned char)g,(unsigned char)b});
    }  
    return result;
@@ -301,6 +316,7 @@ ppm_image ppm_image::box_blur() const
    int row, col;
    int r, g, b;
    float weight = 1.0/9.0;
+
    for(int i = 0; i < wid*hgt; i++) {
       row = floor(i/wid);
       col = i%wid;
@@ -320,6 +336,7 @@ ppm_image ppm_image::box_blur() const
 		if(down >= this->height()) {
 		    down = this->height()-1;
 		}
+      //each pixel is the average of its neighbors
       r = weight*(this->get(up, left).r + this->get(up, col).r + this->get(up, right).r 
       + this->get(row, left).r + this->get(row, col).r + this->get(row, right).r 
       + this->get(down, left).r + this->get(down, col).r + this->get(down, right).r);
@@ -349,6 +366,7 @@ ppm_image ppm_image::swirl_colors() const
    unsigned char r,g,b;
    for(int i = 0; i < wid*hgt; i++) {
       pixel = image_arr[i];
+      //rotate color channels
       r = pixel.g;
       g = pixel.b;
       b = pixel.r;
@@ -365,6 +383,7 @@ ppm_image ppm_image::swirl_colors2() const
    unsigned char r,g,b;
    for(int i = 0; i < wid*hgt; i++) {
       pixel = image_arr[i];
+      //rotate color channels
       r = pixel.b;
       g = pixel.r;
       b = pixel.g;
@@ -379,28 +398,36 @@ ppm_image ppm_image::rainbow() const
    result.image_arr = new ppm_pixel[wid*hgt];
    ppm_pixel pixel;
    int row;
+   //draw horizontal rainbow stripes, thickness based on height of image
    for(int i = 0; i < wid*hgt; i++) {
       row = floor(i/wid);
       pixel = image_arr[i];
       if(row < hgt/6.0) {
+         //red
          result.image_arr[i] = ppm_pixel{255, 0, 0};
       }
       else if(row < 2*hgt/6.0) {
+         //orange
          result.image_arr[i] = ppm_pixel{255, 128, 0};
       }
       else if(row < 3*hgt/6.0) {
+         //yellow
          result.image_arr[i] = ppm_pixel{255, 255, 0};
       }
       else if(row < 4*hgt/6.0) {
+         //green
          result.image_arr[i] = ppm_pixel{0, 255, 0};
       }
       else if(row < 5*hgt/6.0) {
+         //blue
          result.image_arr[i] = ppm_pixel{0, 0, 255};
       }
       else {
+         //purple
          result.image_arr[i] = ppm_pixel{128, 0, 255};
       }
    }
+   //use alpha blend to overlay rainbow image on original image
    result = this->alpha_blend(result, 0.5f);
    return result;
 }
@@ -413,6 +440,7 @@ ppm_image ppm_image::black_border(int thickness) const
    for(int i = 0; i < wid*hgt; i++) {
       row = floor(i/wid);
       col = i%wid;
+      //if pixel is on the edge of image, color in black
       if(row < thickness || row > hgt - thickness || col < thickness || col > wid - thickness) {
          result.image_arr[i] = ppm_pixel{0,0,0};
       } else {
@@ -429,6 +457,8 @@ ppm_image ppm_image::combine(const ppm_image& other) const
    int hgt2 = other.height();
    if(hgt != hgt2){
       cout << "incompatible heights" << endl;
+      //return empty ppm_image object if heights are not the same
+      return ppm_image();
    }
    ppm_image result(wid+wid2,hgt);
    result.image_arr = new ppm_pixel[(wid+wid2)*hgt];
@@ -437,9 +467,11 @@ ppm_image ppm_image::combine(const ppm_image& other) const
    for(int i = 0; i < (wid+wid2)*hgt; i++) {
       row = floor(i/(wid+wid2));
       col = i%(wid+wid2);
+      //if column number is less than the width of original image, set pixel of original image
       if(col<wid) {
          pixel = this->get(row,col);
          result.set(row,col,pixel);
+         //if column number is greater than the width of original image, set pixel to second image
       } else {
          pixel = other.get(row,col-wid);
          result.set(row,col,pixel);

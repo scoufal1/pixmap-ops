@@ -42,7 +42,7 @@ namespace agl
      // Return a sub-image having the given top,left coordinate and (width, height)
      ppm_image subimage(int x, int y, int w, int h) const;
 
-     // Replace the portion starting at (row, col) with the given image
+     // Replace the portion starting at (col, row) with the given image
      // Clamps the image if it doesn't fit on this image
      void replace(const ppm_image& image, int x, int y);
 
@@ -58,16 +58,33 @@ namespace agl
      // Return a copy of this image converted to grayscale
      ppm_image grayscale() const;
 
-   ppm_image invert() const;
-   ppm_image sobel() const;
-   ppm_image box_blur() const;
-   ppm_image swirl_colors() const;
-   ppm_image swirl_colors2() const;
-   ppm_image rainbow() const;
-   ppm_image black_border(int thickness) const;
-   //assumes images are the same dimensions
-   ppm_image combine(const ppm_image& other) const;
-      int limit_value(int value) const;
+     // Return a copy of this image with colors inverted
+     ppm_image invert() const;
+
+     // Return a copy of the image with sobel operator applied to it
+     ppm_image sobel() const;
+
+     // Return a copy of the image with box blur applied to it
+     ppm_image box_blur() const;
+
+     // Return a copy of image with color channels rotated
+     ppm_image swirl_colors() const;
+
+     // Return a copy of the image with color channels rotated in the other direction
+     ppm_image swirl_colors2() const;
+
+     // Return a copy of the image with a rainbow filter overlaying it
+     ppm_image rainbow() const;
+
+     // Return a copy of the image with a black border of given thickness
+     ppm_image black_border(int thickness) const;
+
+     // Return an copy of the image with given image placed to the right of it
+     // (assumes images have the same height)
+     ppm_image combine(const ppm_image& other) const;
+
+     //ensures that rgb value stays within [0,255] range
+     int limit_value(int value) const;
 
      // Get the pixel at index (row, col)
      ppm_pixel get(int row, int col) const;

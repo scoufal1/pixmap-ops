@@ -15,7 +15,7 @@ int main(int argc, char** argv)
     swirl.save("oboe-swirl.ppm");
 
     ppm_image swirl2 = cat.swirl_colors2();
-    swirl.save("oboe-swirl2.ppm");
+    swirl2.save("oboe-swirl2.ppm");
 
     ppm_image rainbow = cat.rainbow();
     rainbow.save("oboe-rainbow.ppm");
@@ -29,6 +29,7 @@ int main(int argc, char** argv)
     ppm_image border = cat.black_border(60);
     border.save("oboe-border.ppm");
 
+    //artwork
     ppm_image image1 = cat.box_blur().swirl_colors().sobel();
     ppm_image image2 = cat.box_blur().sobel();
     ppm_image image3 = cat.box_blur().swirl_colors2().sobel();
